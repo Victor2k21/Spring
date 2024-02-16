@@ -38,4 +38,13 @@ public class BookService {
     public Optional<BookEntity> byId(Integer id){
         return bookStorage.stream().filter( (book -> book.getId().equals(id))).findFirst();
     }
+
+    public BookEntity create(String title, String description) {
+        BookEntity book = new BookEntity();
+        book.setId(bookStorage.size());
+        book.setTitle(title);
+        book.setDescription(description);
+        bookStorage.add(book);
+        return book;
+    }
 }
