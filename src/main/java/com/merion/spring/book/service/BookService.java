@@ -1,5 +1,6 @@
 package com.merion.spring.book.service;
 
+import com.merion.spring.base.exception.ResourceNotFoundException;
 import com.merion.spring.book.entity.BookEntity;
 import org.springframework.stereotype.Service;
 
@@ -12,16 +13,16 @@ import java.util.Random;
 public class BookService {
     static List<BookEntity> bookStorage = new ArrayList<>();
 
-    public BookService(){
+    public BookService() {
         fillStorage();
     }
 
-    public void fillStorage(){
+    public void fillStorage() {
         Random random = new Random();
         for (int i = 0; i < 100; i++) {
             BookEntity book = new BookEntity();
             book.setId(i);
-            book.setTitle("Book #" + random.nextInt(100,999));
+            book.setTitle("Book #" + random.nextInt(100, 999));
             book.setDescription("Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore" +
                     " veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur" +
                     " magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non" +
@@ -31,12 +32,13 @@ public class BookService {
             bookStorage.add(book);
         }
     }
-    public List<BookEntity> all(){
+
+    public List<BookEntity> all() {
         return bookStorage;
     }
 
-    public Optional<BookEntity> byId(Integer id){
-        return bookStorage.stream().filter( (book -> book.getId().equals(id))).findFirst();
+    public Optional<BookEntity> byId(Integer id) {
+        return bookStorage.stream().filter((book -> book.getId().equals(id))).findFirst();
     }
 
     public BookEntity create(String title, String description) {
@@ -46,5 +48,12 @@ public class BookService {
         book.setDescription(description);
         bookStorage.add(book);
         return book;
+    }
+
+    public Optional<BookEntity> edit(BookEntity book) {
+        BookEntity oldBookEntity = byId(book.getId()).orElseThrow();
+        oldBookEntity.setTitle(book.getTitle());
+        oldBookEntity.setDescription(book.getDescription());
+        return Optional.of(oldBookEntity);
     }
 }
